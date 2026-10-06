@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; worker-src 'none'">
+  <title>Browser-Labor · Tesla im Stand</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./capture.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="safety-bar">
+    <a class="home" href="../">← Übersicht</a>
+    <div class="safety-copy"><strong>Nur geparkt testen</strong><span id="activity" role="status">Keine Aufnahme · kein Audio</span></div>
+    <button id="stop-all" class="danger" type="button">Alles stoppen</button>
+  </header>
+  <main>
+    <div class="intro">
+      <p class="eyebrow">Lokales Browser-Labor / Machbarkeits-Gate</p>
+      <h1>Was kann dieser Browser wirklich?</h1>
+      <p>API vorhanden ≠ funktioniert. Freigabe ≠ verständliche Sprache. Ein Browser- oder Simulatortest ist <strong>kein bestätigter Tesla-Fahrzeugtest</strong>.</p>
+      <div class="notice">Keine Cloud-Spracherkennung, Konten oder Uploads. Mikrofon nur nach Tippen; maximal 30 Sekunden. Aufnahme maximal 8 Sekunden, nur im Arbeitsspeicher. Bei Abbruch, Verlassen oder Ausblenden wird gestoppt und Audio gelöscht. Ein offener Freigabedialog muss gegebenenfalls zusätzlich im Browser geschlossen werden.</div>
+      <noscript><p class="notice error">JavaScript ist deaktiviert. Keine Messung möglich; die Angaben unten sind dann nicht getestet.</p></noscript>
+    </div>
+    <nav class="section-nav" aria-label="Testbereiche">
+      <a href="#environment">1 · Umgebung</a><a href="#output">2 · Hören</a><a href="#microphone">3 · Mikrofon</a><a href="#lifecycle">4 · Rückkehr</a><a href="#report">5 · Bericht</a>
+    </nav>
+
+    <section id="environment" aria-labelledby="environment-title">
+      <div class="section-heading"><span class="step">01</span><div><h2 id="environment-title">Umgebung festhalten</h2><p>Automatisch erfasst, noch keine Funktionszusage.</p></div></div>
+      <div class="environment-grid">
+        <div><h3>Browser & APIs</h3><dl id="api-list"><dt>Status</dt><dd>Nicht ermittelt</dd></dl><pre id="environment-details" class="small-pre">Noch nicht ermittelt</pre></div>
+        <div><h3>Fahrzeug · freiwillig</h3><p class="muted">Keine VIN, Namen, Kennzeichen oder Kontodaten eingeben. Felder bleiben zunächst leer.</p>
+          <label for="vehicle-model">Modell</label><select id="vehicle-model"><option value="">Nicht angegeben</option><option>Model 3</option><option>Model Y</option><option>Model S</option><option>Model X</option><option>Anderes / unbekannt</option></select>
+          <label for="vehicle-mcu">Infotainment / MCU</label><select id="vehicle-mcu"><option value="">Nicht angegeben</option><option>AMD Ryzen</option><option>Intel Atom</option><option>NVIDIA Tegra</option><option>Unbekannt</option></select>
+          <label for="vehicle-software">Softwarestand (nur Versionsnummer)</label><input id="vehicle-software" type="text" inputmode="decimal" maxlength="24" placeholder="z. B. 2026.32.6" autocomplete="off" spellcheck="false" aria-describedby="version-hint">
+          <p id="version-hint" class="muted">Format Jahr.Paket.Version; ungültiger Text wird nicht berichtet oder gespeichert.</p>
+          <label for="test-context">Wo wird gerade getestet?</label><select id="test-context"><option value="unspecified">Nicht angegeben</option><option value="parked-vehicle-self-reported">Geparktes Fahrzeug (eigene Angabe)</option><option value="desktop">Desktop / Mobilgerät, kein Fahrzeug</option><option value="simulation">Simulation / Testgerät</option></select>
+        </div>
+      </div>
+    </section>
+
+    <section id="output" aria-labelledby="output-title">
+      <div class="section-heading"><span class="step">02</span><div><h2 id="output-title">Ausgabe getrennt hören</h2><p>Lautstärke zuerst niedrig einstellen. Jeder Start stoppt andere Ausgabe und eine laufende Mikrofonprobe. Keine automatische Wiedergabe.</p></div></div>
+      <div class="test-grid">
+        <article class="test-card">
+          <h3>MP3 · gesprochene Testdatei</h3><p>Normales HTML-Audio, lokal bereitgestellte Datei. Nicht Browser-TTS.</p>
+          <audio id="mp3-audio" src="../assets/test-speech.mp3" preload="none"></audio>
+          <button id="play-mp3" class="primary" type="button">MP3 anhören</button><p id="mp3-status" class="result" role="status">Nicht getestet</p>
+          <div class="heard" data-kind="mp3" aria-label="MP3 manuell bewerten"><button type="button" data-heard="yes">Gehört</button><button type="button" data-heard="no">Nicht gehört</button><button type="button" data-heard="unclear">Unklar</button></div>
+        </article>
+        <article class="test-card">
+          <h3>WAV · kurzer Testton</h3><p>Eigenständiger Dateiformat-Test mit HTML-Audio.</p>
+          <audio id="wav-audio" src="../assets/test-tone.wav" preload="none"></audio>
+          <button id="play-wav" class="primary" type="button">WAV anhören</button><p id="wav-status" class="result" role="status">Nicht getestet</p>
+          <div class="heard" data-kind="wav" aria-label="WAV manuell bewerten"><button type="button" data-heard="yes">Gehört</button><button type="button" data-heard="no">Nicht gehört</button><button type="button" data-heard="unclear">Unklar</button></div>
+        </article>
+        <article class="test-card">
+          <h3>Web Audio · erzeugter Ton</h3><p>Eine Sekunde leiser Sinuston. Kein Nachweis für funktionierendes Mikrofon.</p>
+          <button id="play-webaudio" class="primary" type="button">Web-Audio-Ton</button><p id="webaudio-status" class="result" role="status">Nicht getestet</p>
+          <div class="heard" data-kind="webaudio" aria-label="Web Audio manuell bewerten"><button type="button" data-heard="yes">Gehört</button><button type="button" data-heard="no">Nicht gehört</button><button type="button" data-heard="unclear">Unklar</button></div>
+        </article>
+        <article class="test-card">
+          <h3>Browser-TTS · nur lokale Stimmen</h3><p>Nur Stimmen mit ausdrücklich <code>localService === true</code>. Keine lokale Stimme → kein Aufruf. Die Kennzeichnung kommt vom Browser und ist kein unabhängiger Netzwerkbeweis.</p>
+          <label for="local-voice">Lokale Stimme</label><select id="local-voice" disabled><option>Keine lokale Stimme bestätigt</option></select>
+          <div class="actions"><button id="refresh-voices" type="button">Stimmen prüfen</button><button id="play-tts" class="primary" type="button" disabled>Lokal vorlesen</button></div>
+          <p id="tts-status" class="result" role="status">Nicht getestet</p>
+          <div class="heard" data-kind="tts" aria-label="TTS manuell bewerten"><button type="button" data-heard="yes">Gehört</button><button type="button" data-heard="no">Nicht gehört</button><button type="button" data-heard="unclear">Unklar</button></div>
+        </article>
+      </div>
+      <p class="notice">Ein erfülltes <code>play()</code>-Promise, ein „playing“- oder „end“-Ereignis bestätigt keine hörbare Ausgabe. „Gehört“ nur selbst nach dem tatsächlichen Hören setzen. SpeechRecognition wird ausschließlich erkannt, niemals gestartet.</p>
+    </section>
+
+    <section id="microphone" aria-labelledby="microphone-title">
+      <div class="section-heading"><span class="step">03</span><div><h2 id="microphone-title">Zuhören → aufnehmen → wiedergeben</h2><p>Nur harmlose Testwörter sprechen. Start ersetzt eine frühere Aufnahme. Freigabe nach 12 Sekunden unbeantwortet → Abbruch; eine späte Freigabe wird sofort verworfen.</p></div></div>
+      <div class="actions"><button id="mic-start" class="primary" type="button">Mikrofon starten</button><button id="mic-stop" type="button" disabled>Mikrofon beenden</button><button id="record-start" type="button" disabled>8 s aufnehmen</button><button id="record-stop" type="button" disabled>Aufnahme beenden</button></div>
+      <p id="mic-status" class="result prominent" role="status">Nicht getestet · Mikrofon aus</p>
+      <div class="meter-line"><label for="rms-meter">RMS</label><meter id="rms-meter" min="0" max="1" value="0">0</meter><output id="meter-values">RMS 0.0000 · Peak 0.0000</output></div>
+      <p id="signal-status" class="muted">Noch keine Pegelmessung. Messbare Energie ist kein Nachweis für verständliche Sprache oder das Fahrzeugmikrofon.</p>
+      <pre id="track-info" class="small-pre">Noch keine Trackdaten. IDs und Gerätenamen werden nicht erfasst.</pre>
+      <div class="replay-block"><h3>Aufnahme manuell wiedergeben</h3><p>Erst nach Ende der Aufnahme. Kein Download der Aufnahme. „Alles stoppen“ löscht auch den Audio-Puffer.</p>
+        <audio id="replay-audio" preload="none"></audio>
+        <div class="actions"><button id="play-replay" class="primary" type="button" disabled>Aufnahme anhören</button><button id="delete-audio" type="button" disabled>Aufnahme löschen</button></div><p id="replay-status" class="result" role="status">Nicht getestet</p>
+        <div class="heard" data-kind="replay" aria-label="Aufnahme manuell bewerten"><button type="button" data-heard="yes">Verständlich gehört</button><button type="button" data-heard="no">Nicht gehört</button><button type="button" data-heard="unclear">Unklar / unverständlich</button></div>
+      </div>
+      <details><summary>Manuelle Zyklus-Checkliste · nichts automatisch abhaken</summary>
+        <p>Ausgabe hören, Mikrofon messen, aufnehmen und anhören. Dann <strong>Mikrofon erneut starten</strong> und wieder sprechen. Die zweite Freigabe ist ein eigener Messversuch.</p>
+        <div class="check-grid">
+          <label>1 · Testdatei tatsächlich gehört<select data-check="listen"><option value="pending">Offen</option><option value="observed">Selbst beobachtet</option><option value="failed">Nicht erfolgreich</option><option value="unclear">Unklar</option></select></label>
+          <label>2 · Beim Sprechen Pegel + Aufnahme<select data-check="record"><option value="pending">Offen</option><option value="observed">Selbst beobachtet</option><option value="failed">Nicht erfolgreich</option><option value="unclear">Unklar</option></select></label>
+          <label>3 · Eigene Testwörter verständlich gehört<select data-check="replay"><option value="pending">Offen</option><option value="observed">Selbst beobachtet</option><option value="failed">Nicht erfolgreich</option><option value="unclear">Unklar</option></select></label>
+          <label>4 · Nach Wiedergabe Mikro erneut erhalten<select data-check="reacquire"><option value="pending">Offen</option><option value="observed">Selbst beobachtet</option><option value="failed">Nicht erfolgreich</option><option value="unclear">Unklar</option></select></label>
+        </div>
+      </details>
+    </section>
+
+    <section id="lifecycle" aria-labelledby="lifecycle-title">
+      <div class="section-heading"><span class="step">04</span><div><h2 id="lifecycle-title">Wechsel, Rückkehr & Bedienung</h2><p>Navigation/Telefon-Ansicht nur im Stand öffnen. Falls der Browser keinen Sichtbarkeitswechsel meldet, ist dieser nicht automatisch beweisbar. Keine automatische Wiederaufnahme.</p></div></div>
+      <div class="test-grid">
+        <article class="test-card"><h3>Ansicht wechseln / Audiofokus</h3><p>Eine Ausgabe oder Mikrofonprobe bei Bedarf selbst starten, dann Fahrzeugansicht wechseln. Telefon-Fokus nur bei einem ohnehin geplanten Anruf beobachten; diese Seite initiiert keinen Anruf.</p>
+          <div class="actions"><button id="mark-switch" type="button">Wechsel vormerken</button><button id="mark-return" type="button">Zurück · sicher stoppen</button></div>
+          <label for="focus-result">Eigene Beobachtung nach Rückkehr</label><select id="focus-result"><option value="pending">Offen / nicht geprüft</option><option value="stopped-manual-restart-worked">Gestoppt; manueller Neustart funktionierte</option><option value="manual-restart-failed">Manueller Neustart scheiterte</option><option value="unexpected-audio">Unerwartet weiterlaufendes Audio beobachtet</option><option value="unclear">Unklar / kein Wechselereignis</option></select>
+          <p id="lifecycle-status" class="result">Noch kein Wechsel vorgemerkt.</p>
+        </article>
+        <article class="test-card"><h3>Reload & lokaler Marker</h3><p>Nur auf Knopfdruck wird ein Zeitstempel in localStorage gespeichert. Danach bewusst neu laden. Das beweist keine dauerhafte Anmeldung oder Fahreridentität.</p><div class="actions"><button id="marker-set" type="button">Marker lokal setzen</button><button id="reload-page" type="button">Jetzt neu laden</button></div><p id="marker-status" class="result" role="status">Noch nicht geprüft</p></article>
+        <article class="test-card"><h3>Touch-Ziele</h3><p>Beide Flächen gezielt tippen. Zähler sind technische Klickereignisse, kein Beleg für sichere Bedienung während der Fahrt.</p><div class="touch-targets"><button id="touch-a" type="button">Ziel A · 0</button><button id="touch-b" type="button">Ziel B · 0</button></div></article>
+        <article class="test-card"><h3>Tastatur / Eingabefeld</h3><label for="typing-test">Nur harmlosen Testtext eingeben</label><input id="typing-test" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="Zum Beispiel: Test im Stand"><p id="typing-status" class="result">Noch keine Eingabe</p><button id="clear-typing" type="button">Text leeren</button><p class="muted">Der Text wird nie in Berichte, Logs oder Speicher übernommen. Nur Eingabeereignisse und Zeichenanzahl. Beim Ausblenden wird das Feld geleert.</p></article>
+      </div>
+      <details><summary>Lokales Ereignisprotokoll</summary><pre id="event-log" class="small-pre">Noch keine Ereignisse</pre></details>
+    </section>
+
+    <section id="report" aria-labelledby="report-title">
+      <div class="section-heading"><span class="step">05</span><div><h2 id="report-title">Beobachtung sichern · bewusst teilen</h2><p>Nur Metadaten, manuelle Bewertungen und Ereignisse. Keine Audiodaten, Audio-URLs, Geräte-IDs oder eingetippten Testtexte.</p></div></div>
+      <h3>Kompaktansicht · Foto-Fallback</h3><p>Falls Download oder Zwischenablage im Tesla nicht funktionieren: diese Karte fotografieren. Optional den vollständigen Text manuell auswählen. Vor Weitergabe Angaben prüfen.</p>
+      <div id="photo-panel"><button id="photo-mode" type="button" aria-pressed="false">Fotoansicht öffnen</button><pre id="compact-report" class="compact-report">Noch kein Bericht erstellt</pre></div>
+      <div class="actions"><button id="refresh-report" type="button">Bericht aktualisieren</button><button id="download-report" class="primary" type="button">JSON herunterladen</button><button id="copy-report" type="button">Bericht kopieren</button><button id="select-report" type="button">Text auswählen</button></div>
+      <p id="export-status" class="result" role="status">Download/Teilen wird nie automatisch ausgelöst.</p>
+      <details id="report-details"><summary>Vollständiger Metadatenbericht</summary><label for="report-text">JSON · nur lesbar</label><textarea id="report-text" rows="15" readonly spellcheck="false"></textarea></details>
+      <div class="storage-block"><h3>Optional auf diesem Browser speichern</h3><p>„Diagnose lokal speichern“ legt genau den aktuellen Metadatenbericht in localStorage ab; kein Autosave. Andere Nutzer dieses Browserprofils können ihn lesen. Nur Testdaten verwenden. Fahrzeug-Browserdaten können jederzeit verschwinden.</p>
+        <div class="actions"><button id="save-diagnostics" type="button">Diagnose lokal speichern</button><button id="show-saved" type="button">Gespeicherten Bericht zeigen</button><button id="delete-local" type="button">Lokale Daten löschen</button></div><p id="storage-status" class="result" role="status">Noch nichts in diesem Lauf gespeichert.</p><pre id="saved-report" class="small-pre" hidden></pre>
+        <p class="muted">Löschen entfernt nur die Schlüssel dieser Probe und ihren Audio-Puffer. Der laufende Metadatenbericht bleibt bis zum Neuladen im RAM. Keine fremden Browserdaten werden gelöscht.</p>
+      </div>
+    </section>
+    <footer>Originaler lokaler Testcode · keine Umgehung von Fahrzeugbeschränkungen · keine STT-/LLM-Integration · Testergebnisse gelten nur für die dokumentierte Umgebung.</footer>
+  </main>
+</body>
+</html>
