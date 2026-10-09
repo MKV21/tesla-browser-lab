@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src 'self' blob:; connect-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Tesla · Audiolängen testen</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<main>
+<header><h1>Audiolängen testen</h1><span>Nur im Stand</span></header>
+<p class="intro">Tesla-Musik starten → Länge antippen → hören, ob die Musik pausiert. <strong>Vor jedem Versuch Musik wieder starten.</strong></p>
+<div class="options"><label for="format">Format</label><select id="format"><option value="mp3">MP3 · zuerst testen</option><option value="wav">WAV · Vergleich</option></select><span>Gleicher Testklang, nur andere Länge.</span></div>
+<section id="lengths" aria-label="Audiolänge wählen"></section>
+<section class="playback" aria-label="Wiedergabe">
+<div class="status-line"><strong id="status" role="status">Bereit · keine automatische Wiedergabe</strong><button id="stop" disabled>Stopp</button></div>
+<progress id="progress" max="1" value="0" aria-label="Wiedergabefortschritt"></progress>
+<div class="timing"><span id="time">0,00 s</span><span id="duration">Dateidauer: –</span></div>
+</section>
+<section class="observations" aria-label="Eigene Beobachtung"><span>Musik beim letzten Versuch:</span><div id="answers"><button data-result="läuft weiter" disabled>Läuft weiter</button><button data-result="wird leiser" disabled>Wird leiser</button><button data-result="pausiert" disabled>Pausiert</button></div><p id="result" aria-live="polite">Die Seite kann die Tesla-Musik nicht selbst messen.</p></section>
+<details><summary>Testhinweise &amp; Protokoll</summary>
+<p>Zuerst 8, 10 und 12 Sekunden vergleichen, dann mit 9 / 9,5 / 10,5 / 11 eingrenzen. Wird die Musik sofort beim Start unterbrochen oder erst nach einigen Sekunden?</p>
+<p>Für den Hintergrundtest eine längere Datei starten und zur Tesla-Karte wechseln. Diese öffentliche Testseite beendet Audio bei einem Sichtbarkeitswechsel absichtlich nicht. Tesla kann es dennoch stoppen.</p>
+<p>Wiedergabe wie beim Dashboard: Datei laden → Blob-URL → neues HTML-Audioelement. Keine Media-Session-Tricks, kein Web-Audio-Player, kein Mikrofon, kein Login und keine Ergebnisübermittlung. Beobachtungen bleiben nur bis zum Neuladen im Speicher. Die Hosting-Plattform kann normale Zugriffsprotokolle führen.</p>
+<p>Die Tasten nennen die Zieldauer. „Dateidauer“ zeigt die vom Browser erkannte Dauer; MP3 kann durch die Kodierung leicht abweichen. WAV enthält exakt die angegebene Anzahl Sekunden. Alle Dateien enthalten denselben sanften, pulsierenden Testklang ohne Sprachdaten.</p>
+<pre id="log" aria-label="Lokales Testprotokoll"></pre>
+</details>
+</main>
+</body>
+</html>
