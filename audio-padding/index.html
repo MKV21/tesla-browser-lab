@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src 'self' blob:; connect-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Tesla · Kurze Ausgabe mit Stille</title>
+<link rel="stylesheet" href="../audio-length/style.css"><link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head><body><main>
+<header><h1>Kurzer Ton · lange Datei</h1><span>Nur im Stand</span></header>
+<p class="intro"><strong>Vor jedem Test Tesla-Musik starten.</strong> Dann A → B → C vergleichen. Pausiert die Musik sofort? Kommt sie nach dem Ende von allein zurück?</p>
+<div class="options"><label for="format">Format</label><select id="format"><option value="mp3">MP3 · zuerst testen</option><option value="wav">WAV · Vergleich</option></select><a href="../audio-length/?v=2">Zum Längentest</a></div>
+<section id="tests" aria-label="Vergleich auswählen">
+<button data-test="short"><strong>A · Original</strong><span>3 s Ton · Datei 3 s</span></button>
+<button data-test="padded"><strong>B · Mit Stille</strong><span>3 s Ton + Stille · Datei 21 s<br>Bis zum Dateiende abspielen</span></button>
+<button data-test="cut"><strong>C · Mit automatischem Stopp</strong><span>Dieselbe 21-s-Datei wie B<br>Nach dem Ton bei ca. 3 s beenden</span></button>
+<button data-test="control"><strong>Kontrolle · Langer Ton</strong><span>20 s Ton · ohne Stille</span></button>
+</section>
+<section class="playback" aria-label="Wiedergabe"><div class="status-line"><strong id="status" role="status">Bereit · keine automatische Wiedergabe</strong><button id="stop" disabled>Stopp</button></div>
+<progress id="progress" max="1" value="0" aria-label="Wiedergabefortschritt"></progress><div class="timing"><span id="time">0,00 s</span><span id="duration">Dateidauer: –</span></div></section>
+<p class="note">Bei C sollte nur der kurze Ton zu hören sein. Ob Musikpause und Rückkehr funktionieren, musst du im Auto hören – die Seite kann das nicht erkennen.</p>
+<details><summary>Beobachtungen &amp; Protokoll</summary>
+<div class="answer-row"><label for="pause-result">Musik beim Start</label><select id="pause-result" disabled><option value="">Bitte wählen</option><option>Sofort pausiert</option><option>Läuft weiter</option><option>Wird leiser</option><option>Erst später pausiert</option></select></div>
+<div class="answer-row"><label for="return-result">Musik nach Ende/Stopp</label><select id="return-result" disabled><option value="">Bitte wählen</option><option>Kommt von allein zurück</option><option>Bleibt pausiert</option><option>War gar nicht pausiert</option></select></div>
+<p id="result" aria-live="polite">Nur lokal bis zum Neuladen; keine Ergebnisübermittlung.</p>
+<p>Alle Varianten verwenden normale HTML-Audioelemente mit Blob-URLs. B und C laden exakt dieselbe Datei. C beendet den Player erst, wenn seine Medienzeit mindestens 3 Sekunden erreicht hat – nicht nach einem Timer ab Klick. Stalls oder Browser-Drosselung können den Stopp verzögern; die tatsächliche Stoppzeit steht im Protokoll. Zuerst bei geöffnetem Browser testen, danach bei Bedarf zur Karte wechseln.</p>
+<p>Kein Mikrofon, kein Login, keine Tesla-API, kein dauerhafter Hintergrundton und keine Media-Session-Tricks. Für den öffentlichen Hintergrundtest stoppen wir bei bloßem Verbergen der Seite absichtlich nicht. Alle Dateien sind endlich; ein zusätzlicher Sicherheitstimer beendet eine hängende Wiedergabe. Die Hosting-Plattform kann normale Zugriffsprotokolle führen.</p>
+<pre id="log" aria-label="Lokales Testprotokoll"></pre>
+</details>
+</main></body></html>
