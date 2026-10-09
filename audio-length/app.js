@@ -1,6 +1,6 @@
 'use strict';
 (() => {
-  const lengths = [3, 5, 6, 8, 9, 9.5, 10, 10.5, 11, 12, 15, 20];
+  const lengths = [3, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20];
   const $ = id => document.getElementById(id);
   const seconds = value => Number.isFinite(value) ? value.toFixed(2).replace('.', ',') + ' s' : '–';
   let generation = 0, active = null, controller = null, last = null;

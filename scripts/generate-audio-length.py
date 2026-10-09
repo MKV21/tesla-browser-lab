@@ -7,7 +7,7 @@ import sys
 import wave
 
 ROOT = Path(__file__).resolve().parents[1] / 'audio-length' / 'clips'
-LENGTHS = [3, 5, 6, 8, 9, 9.5, 10, 10.5, 11, 12, 15, 20]
+LENGTHS = [3, 5, 6, 8, 9, 9.5, 10, 10.5, 11, 12, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20]
 RATE = 24000
 ROOT.mkdir(parents=True, exist_ok=True)
 for duration in LENGTHS:
