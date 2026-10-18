@@ -5,32 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src 'self' blob:; connect-src 'self'; img-src 'self' blob:; object-src 'self'; frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com; base-uri 'none'; form-action 'none'">
-<title>Tesla · Videoplayer testen</title>
-<link rel="stylesheet" href="style.css?v=4">
-<script src="app.js?v=4" defer></script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Tesla · Video im Stand</title>
+<link rel="stylesheet" href="style.css?v=5">
+<script src="app.js?v=5" defer></script>
 </head>
 <body>
 <main>
-<header><h1>Videoplayer testen</h1><a href="../">Labor</a></header>
-<p class="intro">Stand 4. Nur im Stand. Das Videoelement zeigt hier kein Bild. Oben der Ersatz: Einzelbilder plus MP3, ohne Videoelement.</p>
-<div class="mover" aria-hidden="true"><span></span></div>
-<section id="autoplay" aria-label="Autoplay ohne Tippen"></section>
-<p id="caps" role="status">Fähigkeiten werden gelesen…</p>
-<section class="stage" aria-label="Aktive Variante">
-<h2 id="title">Variante wählen</h2>
-<p id="hint">Acht Sekunden, synthetisch, ohne Sprache. Die große Zahl muss hochzählen. Nichts wird hochgeladen.</p>
-<div id="view"></div>
-<div class="status-line"><strong id="status">Bereit</strong><button id="start" type="button" disabled>Start</button><button id="stop" type="button" disabled>Stopp</button></div>
-<div class="tools"><button id="force" type="button">GPU-Ebene umschalten</button></div>
-<p id="metrics"></p>
-</section>
-<div id="tests" aria-label="Variante wählen"></div>
-<details>
-<summary>Protokoll zum Abfotografieren</summary>
-<pre id="log"></pre>
-</details>
-<p class="note">Kein Konto, kein Analyse-Dienst, kein Upload. YouTube wird erst nach Tippen geladen; Google sieht dann die Anfrage. Die Hosting-Plattform sieht normale Seitenabrufe. Ein Treffer auf dieser Seite ist keine Freigabe, während der Fahrt Video zu schauen.</p>
+<header><h1>Video im Stand</h1><span>Nur geparkt</span></header>
+<p class="intro">Stand 5. Big Buck Bunny, 10 Sekunden, 24 Bilder pro Sekunde. Ohne Videoelement.</p>
+<canvas id="screen" width="480" height="270"></canvas>
+<div class="status-line"><strong id="status">Lade Bilder…</strong><button id="start" type="button" disabled>Start</button></div>
+<p class="note">Ausschnitt aus Big Buck Bunny. (c) 2008 Blender Foundation / www.bigbuckbunny.org, CC BY 3.0. Nur im Stand ansehen.</p>
 </main>
 </body>
 </html>
