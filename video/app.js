@@ -1,6 +1,8 @@
 (function () {
   const MSE_MIME = 'video/mp4; codecs="avc1.42C01E,mp4a.40.2"';
   const tests = [
+    { id: 'stand', label: 'Stand-Player', kind: 'stand', hint: 'Kein Videoelement. Einzelbilder auf der Zeichenfläche, Ton als MP3. Die Zahl muss laufen, der Ton muss dazu kommen.' },
+    { id: 'webpaudio', label: 'WebP plus Ton', kind: 'webpaudio', hint: 'Animiertes WebP fürs Bild, MP3 für den Ton. Ebenfalls kein Videoelement.' },
     { id: 'gif', label: 'Animiertes GIF', kind: 'gif', hint: 'Kein Videoelement. Ein animiertes Bild. Die Zahl muss sich von selbst ändern.' },
     { id: 'webp', label: 'Animiertes WebP', kind: 'webp', hint: 'Ebenfalls kein Videoelement, anderes Bildformat. Oft schwächer unterstützt als GIF.' },
     { id: 'flip', label: 'Bildfolge', kind: 'flip', hint: 'Eigener Player: sechs Einzelbilder, einmal pro Sekunde getauscht. Kein Videoelement.' },
@@ -229,6 +231,12 @@
     });
     log('Gewählt: ' + test.label);
 
+    if (test.kind === 'stand' || test.kind === 'webpaudio') {
+      enableStart(true);
+      runParkPlayer(test.kind);
+      return;
+    }
+
     if (test.kind === 'gif' || test.kind === 'webp' || test.kind === 'flip' || test.kind === 'flipcanvas' || test.kind === 'draw' || test.kind === 'gl') {
       enableStart(true);
       runPicture(test.kind);
@@ -406,6 +414,63 @@
     return pending;
   }
 
+  function runParkPlayer(kind) {
+    window.clearInterval(canvasTimer);
+    view.replaceChildren();
+    stopBtn.disabled = false;
+    const audio = document.createElement('audio');
+    audio.src = 'clips/player/audio.mp3';
+    audio.loop = true;
+    audio.preload = 'auto';
+    audio.setAttribute('playsinline', '');
+    audio.style.display = 'none';
+    if (kind === 'webpaudio') {
+      const img = document.createElement('img');
+      img.alt = 'WebP';
+      img.src = 'clips/player/picture.webp';
+      view.append(img, audio);
+      statusEl.textContent = 'WebP plus Ton';
+    } else {
+      const canvas = document.createElement('canvas');
+      canvas.width = 480;
+      canvas.height = 270;
+      view.append(canvas, audio);
+      const context = canvas.getContext('2d');
+      const frames = [];
+      for (let i = 1; i <= 64; i += 1) {
+        const img = new Image();
+        img.src = 'clips/player/f' + String(i).padStart(3, '0') + '.jpg';
+        frames.push(img);
+      }
+      let shown = -1;
+      const paint = function () {
+        const index = Math.min(63, Math.floor((audio.currentTime % 8) * 8));
+        const img = frames[index];
+        if (img && img.complete && img.naturalWidth && index !== shown) {
+          context.drawImage(img, 0, 0, 480, 270);
+          shown = index;
+        }
+        statusEl.textContent = (audio.paused ? 'Pause' : 'Läuft') + ' · Bild ' + (index + 1) + '/64 · ' + audio.currentTime.toFixed(1) + ' s';
+        if (!audio.paused) canvasTimer = window.setTimeout(paint, 40);
+      };
+      audio.addEventListener('play', paint);
+      audio.addEventListener('pause', function () {
+        window.clearTimeout(canvasTimer);
+      });
+    }
+    const pending = audio.play();
+    if (!pending) {
+      log(kind + ' ohne Promise');
+      return;
+    }
+    pending.then(function () {
+      log(kind + ' Ton gestartet');
+    }).catch(function (error) {
+      statusEl.textContent = 'Ton abgelehnt: ' + error.name;
+      log(kind + ' ' + error.name);
+    });
+  }
+
   function runPicture(kind) {
     window.clearInterval(canvasTimer);
     view.replaceChildren();
@@ -504,6 +569,10 @@
 
   startBtn.addEventListener('click', function () {
     if (!active) return;
+    if (active.kind === 'stand' || active.kind === 'webpaudio') {
+      runParkPlayer(active.kind);
+      return;
+    }
     if (active.kind === 'gif' || active.kind === 'webp' || active.kind === 'flip' || active.kind === 'flipcanvas' || active.kind === 'draw' || active.kind === 'gl') {
       runPicture(active.kind);
       return;
