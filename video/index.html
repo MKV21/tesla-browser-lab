@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src 'self' blob:; connect-src 'self'; img-src 'self' blob:; object-src 'self'; frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com; base-uri 'none'; form-action 'none'">
+<title>Tesla · Videoplayer testen</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<main>
+<header><h1>Videoplayer testen</h1><a href="../">Labor</a></header>
+<p class="intro">Nur im Stand. Medienlautstärke zuerst niedrig. Eine Variante wählen, dann <strong>Start</strong>. Im Bild steht der Name der Datei, der Zähler muss laufen, dazu ein hoher Ton.</p>
+<section id="autoplay" aria-label="Autoplay ohne Tippen"></section>
+<p id="caps" role="status">Fähigkeiten werden gelesen…</p>
+<section class="stage" aria-label="Aktive Variante">
+<h2 id="title">Variante wählen</h2>
+<p id="hint">Die Clips sind drei Sekunden lang, synthetisch und ohne Sprache. Nichts wird hochgeladen.</p>
+<div id="view"></div>
+<div class="status-line"><strong id="status">Bereit</strong><button id="start" type="button" disabled>Start</button><button id="stop" type="button" disabled>Stopp</button></div>
+<p id="metrics"></p>
+</section>
+<div id="tests" aria-label="Variante wählen"></div>
+<details>
+<summary>Protokoll zum Abfotografieren</summary>
+<pre id="log"></pre>
+</details>
+<p class="note">Kein Konto, kein Analyse-Dienst, kein Upload. YouTube wird erst nach Tippen geladen; Google sieht dann die Anfrage. Die Hosting-Plattform sieht normale Seitenabrufe. Ein Treffer auf dieser Seite ist keine Freigabe, während der Fahrt Video zu schauen.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,103 @@
+{
+  "clips": [
+    {
+      "file": "h264-baseline.mp4",
+      "bytes": 127493,
+      "duration": 3.0,
+      "video": "h264",
+      "audio": "aac",
+      "width": 480,
+      "height": 270,
+      "profile": "Constrained Baseline",
+      "avc1": "avc1.42C01E"
+    },
+    {
+      "file": "h264-high.mp4",
+      "bytes": 117221,
+      "duration": 3.0,
+      "video": "h264",
+      "audio": "aac",
+      "width": 480,
+      "height": 270,
+      "profile": "High",
+      "avc1": "avc1.64001F"
+    },
+    {
+      "file": "h264-frag.mp4",
+      "bytes": 136687,
+      "duration": 3.021,
+      "video": "h264",
+      "audio": "aac",
+      "width": 480,
+      "height": 270,
+      "profile": "Constrained Baseline",
+      "avc1": "avc1.42C01E"
+    },
+    {
+      "file": "vp8.webm",
+      "bytes": 150003,
+      "duration": 3.003,
+      "video": "vp8",
+      "audio": "vorbis",
+      "width": 480,
+      "height": 270,
+      "profile": "0",
+      "avc1": null
+    },
+    {
+      "file": "vp9.webm",
+      "bytes": 197538,
+      "duration": 3.008,
+      "video": "vp9",
+      "audio": "opus",
+      "width": 480,
+      "height": 270,
+      "profile": "Profile 0",
+      "avc1": null
+    },
+    {
+      "file": "av1.webm",
+      "bytes": 128254,
+      "duration": 3.008,
+      "video": "av1",
+      "audio": "opus",
+      "width": 480,
+      "height": 270,
+      "profile": "Main",
+      "avc1": null
+    },
+    {
+      "file": "hevc.mp4",
+      "bytes": 117961,
+      "duration": 3.0,
+      "video": "hevc",
+      "audio": "aac",
+      "width": 480,
+      "height": 270,
+      "profile": "Main",
+      "avc1": null
+    },
+    {
+      "file": "theora.ogv",
+      "bytes": 215243,
+      "duration": 3.0,
+      "video": "theora",
+      "audio": "vorbis",
+      "width": 480,
+      "height": 270,
+      "profile": null,
+      "avc1": null
+    },
+    {
+      "file": "segment.m2ts",
+      "bytes": 144384,
+      "duration": 3.021,
+      "video": "h264",
+      "audio": "aac",
+      "width": 480,
+      "height": 270,
+      "profile": "Constrained Baseline",
+      "avc1": null
+    }
+  ]
+}
