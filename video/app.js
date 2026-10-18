@@ -1,6 +1,12 @@
 (function () {
   const MSE_MIME = 'video/mp4; codecs="avc1.42C01E,mp4a.40.2"';
   const tests = [
+    { id: 'gif', label: 'Animiertes GIF', kind: 'gif', hint: 'Kein Videoelement. Ein animiertes Bild. Die Zahl muss sich von selbst ändern.' },
+    { id: 'webp', label: 'Animiertes WebP', kind: 'webp', hint: 'Ebenfalls kein Videoelement, anderes Bildformat. Oft schwächer unterstützt als GIF.' },
+    { id: 'flip', label: 'Bildfolge', kind: 'flip', hint: 'Eigener Player: sechs Einzelbilder, einmal pro Sekunde getauscht. Kein Videoelement.' },
+    { id: 'flipcanvas', label: 'Bildfolge auf Canvas', kind: 'flipcanvas', hint: 'Dieselben Bilder, aber auf eine Zeichenfläche gemalt. Auch das ist kein Videoelement.' },
+    { id: 'draw', label: 'Canvas-Zeichnung', kind: 'draw', hint: 'Die Seite malt Zahl und Balken selbst. Wenn das stillsteht, aktualisiert der Bildschirm gar keine Grafik.' },
+    { id: 'gl', label: 'WebGL-Fläche', kind: 'gl', hint: 'Farbe über die Grafikschnittstelle, ohne Bilddatei und ohne Videoelement.' },
     { id: 'h264', label: 'H.264 Baseline', kind: 'file', src: 'clips/h264-baseline.mp4', controls: true, hint: 'Wahrscheinlichste Variante. Die große Zahl muss hochzählen, die Farbe jede Sekunde wechseln.' },
     { id: 'high', label: 'H.264 High', kind: 'file', src: 'clips/h264-high.mp4', controls: true, hint: 'Gleiches Containerformat, höheres Profil. Im Bild muss H264 HIGH stehen.' },
     { id: 'vp8', label: 'WebM VP8', kind: 'file', src: 'clips/vp8.webm', controls: true, hint: 'Anderes Container- und Codec-Paar. Im Bild muss VP8 stehen.' },
@@ -223,6 +229,12 @@
     });
     log('Gewählt: ' + test.label);
 
+    if (test.kind === 'gif' || test.kind === 'webp' || test.kind === 'flip' || test.kind === 'flipcanvas' || test.kind === 'draw' || test.kind === 'gl') {
+      enableStart(true);
+      runPicture(test.kind);
+      return;
+    }
+
     if (test.kind === 'file' || test.kind === 'fullscreen' || test.kind === 'pip') {
       const video = makeVideo(test.kind === 'file' ? test.controls : true);
       view.append(video);
@@ -394,6 +406,83 @@
     return pending;
   }
 
+  function runPicture(kind) {
+    window.clearInterval(canvasTimer);
+    view.replaceChildren();
+    stopBtn.disabled = false;
+    if (kind === 'gif' || kind === 'webp') {
+      const img = document.createElement('img');
+      img.alt = kind;
+      img.src = kind === 'gif' ? 'clips/motion.gif' : 'clips/motion.webp';
+      view.append(img);
+      statusEl.textContent = 'Bild läuft von selbst. Die Zahl muss sich ändern.';
+      log(kind + ' eingesetzt');
+      return;
+    }
+    if (kind === 'flip' || kind === 'flipcanvas') {
+      const frames = ['clips/frames/f1.jpg', 'clips/frames/f2.jpg', 'clips/frames/f3.jpg', 'clips/frames/f4.jpg', 'clips/frames/f5.jpg', 'clips/frames/f6.jpg'];
+      const images = frames.map(function (src) {
+        const img = new Image();
+        img.src = src;
+        return img;
+      });
+      const target = kind === 'flip' ? document.createElement('img') : document.createElement('canvas');
+      if (kind === 'flipcanvas') {
+        target.width = 480;
+        target.height = 270;
+      } else {
+        target.alt = 'Bildfolge';
+      }
+      view.append(target);
+      const context = kind === 'flipcanvas' ? target.getContext('2d') : null;
+      let frame = 0;
+      const step = function () {
+        const img = images[frame % images.length];
+        if (kind === 'flip') target.src = img.src;
+        else if (img.complete && img.naturalWidth) context.drawImage(img, 0, 0, 480, 270);
+        statusEl.textContent = 'Bildfolge ' + ((frame % images.length) + 1) + ' von 6';
+        frame += 1;
+      };
+      step();
+      canvasTimer = window.setInterval(step, 700);
+      log(kind + ' gestartet');
+      return;
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = 480;
+    canvas.height = 270;
+    view.append(canvas);
+    const gl = kind === 'gl' ? (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) : null;
+    if (kind === 'gl' && !gl) {
+      statusEl.textContent = 'WebGL fehlt';
+      log('WebGL fehlt');
+      return;
+    }
+    const context = kind === 'draw' ? canvas.getContext('2d') : null;
+    let tick = 0;
+    const step = function () {
+      const odd = tick % 2 === 0;
+      if (gl) {
+        gl.clearColor(odd ? 0.12 : 0.9, odd ? 0.71 : 0.24, odd ? 0.89 : 0.11, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        statusEl.textContent = 'WebGL wechselt Farbe ' + (tick % 8);
+      } else {
+        context.fillStyle = odd ? '#1eb4e4' : '#e63c1c';
+        context.fillRect(0, 0, 480, 270);
+        context.fillStyle = '#fff';
+        context.font = 'bold 120px sans-serif';
+        context.fillText(String(tick % 8), 190, 170);
+        context.fillStyle = '#ff0';
+        context.fillRect((tick * 55) % 410, 200, 70, 50);
+        statusEl.textContent = 'Canvas zeichnet ' + (tick % 8);
+      }
+      tick += 1;
+    };
+    step();
+    canvasTimer = window.setInterval(step, 700);
+    log(kind + ' gestartet');
+  }
+
   function sampleCanvas(video) {
     const canvas = view.querySelector('canvas');
     if (!canvas) return;
@@ -415,6 +504,10 @@
 
   startBtn.addEventListener('click', function () {
     if (!active) return;
+    if (active.kind === 'gif' || active.kind === 'webp' || active.kind === 'flip' || active.kind === 'flipcanvas' || active.kind === 'draw' || active.kind === 'gl') {
+      runPicture(active.kind);
+      return;
+    }
     document.querySelectorAll('#autoplay video').forEach(function (video) { video.pause(); });
     if (active.kind === 'youtube') {
       clearView();
