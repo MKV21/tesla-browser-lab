@@ -12,14 +12,21 @@ header a{color:#155968;font-weight:650;min-height:48px;display:inline-flex;align
 .autoplay figure{margin:0;background:#fff;border-radius:12px;padding:8px}
 .autoplay video{width:100%;height:84px;background:#111;object-fit:contain;display:block}
 .autoplay figcaption{font-size:14px;margin-top:6px;min-height:2.6em}
-.stage{position:sticky;top:0;z-index:2;background:#f2f5f6;padding:8px 0 10px}
+.stage{position:static;background:#f2f5f6;padding:8px 0 10px}
 #hint,#metrics{margin:6px 0;font-size:15px;line-height:1.4}
-#view{min-height:120px;background:#111;border-radius:12px;overflow:hidden}
-#view video,#view canvas,#view iframe,#view object,#view embed{width:100%;height:210px;background:#111;display:block;object-fit:contain}
+.mover{height:18px;border-radius:9px;background:#d5e3e6;overflow:hidden;margin:8px 0}
+.mover span{display:block;width:28%;height:100%;background:#155968;animation:slide 1.6s linear infinite}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(260%)}}
+#view{min-height:120px;background:#111}
+#view video,#view canvas,#view iframe,#view object,#view embed{width:100%;height:240px;background:#111;display:block;object-fit:contain;border-radius:0;transform:none}
+#view.force video{transform:translateZ(0);opacity:.99}
 #view .pair{display:grid;grid-template-columns:1fr 1fr}
-#view .pair video,#view .pair canvas{height:168px}
+#view .pair video,#view .pair canvas{height:180px}
 .status-line{display:flex;align-items:center;gap:8px;margin-top:8px}
-#status{flex:1;font-size:18px;line-height:1.3}
+#status{flex:1;font-size:22px;font-weight:700;line-height:1.25}
+.tools{display:flex;gap:8px;margin-top:8px}
+.tools button{flex:1}
+.mirror-label{margin:8px 0 4px;color:#fff;background:#111;padding:6px 8px;font-size:14px}
 button{font:inherit;font-size:17px;min-height:56px;padding:10px 12px;border:1px solid #aabfc6;border-radius:11px;background:#fff;color:inherit;cursor:pointer;touch-action:manipulation}
 button:disabled{opacity:.5;cursor:default}
 button:focus-visible{outline:3px solid #086879;outline-offset:2px}

@@ -2,8 +2,8 @@
   "clips": [
     {
       "file": "h264-baseline.mp4",
-      "bytes": 127493,
-      "duration": 3.0,
+      "bytes": 122488,
+      "duration": 8.0,
       "video": "h264",
       "audio": "aac",
       "width": 480,
@@ -13,8 +13,8 @@
     },
     {
       "file": "h264-high.mp4",
-      "bytes": 117221,
-      "duration": 3.0,
+      "bytes": 119380,
+      "duration": 8.0,
       "video": "h264",
       "audio": "aac",
       "width": 480,
@@ -24,8 +24,8 @@
     },
     {
       "file": "h264-frag.mp4",
-      "bytes": 136687,
-      "duration": 3.021,
+      "bytes": 123832,
+      "duration": 8.021,
       "video": "h264",
       "audio": "aac",
       "width": 480,
@@ -35,8 +35,8 @@
     },
     {
       "file": "vp8.webm",
-      "bytes": 150003,
-      "duration": 3.003,
+      "bytes": 65651,
+      "duration": 8.003,
       "video": "vp8",
       "audio": "vorbis",
       "width": 480,
@@ -46,8 +46,8 @@
     },
     {
       "file": "vp9.webm",
-      "bytes": 197538,
-      "duration": 3.008,
+      "bytes": 126218,
+      "duration": 8.008,
       "video": "vp9",
       "audio": "opus",
       "width": 480,
@@ -57,8 +57,8 @@
     },
     {
       "file": "av1.webm",
-      "bytes": 128254,
-      "duration": 3.008,
+      "bytes": 108293,
+      "duration": 8.008,
       "video": "av1",
       "audio": "opus",
       "width": 480,
@@ -68,8 +68,8 @@
     },
     {
       "file": "hevc.mp4",
-      "bytes": 117961,
-      "duration": 3.0,
+      "bytes": 119030,
+      "duration": 8.0,
       "video": "hevc",
       "audio": "aac",
       "width": 480,
@@ -79,8 +79,8 @@
     },
     {
       "file": "theora.ogv",
-      "bytes": 215243,
-      "duration": 3.0,
+      "bytes": 65154,
+      "duration": 8.0,
       "video": "theora",
       "audio": "vorbis",
       "width": 480,
@@ -90,8 +90,8 @@
     },
     {
       "file": "segment.m2ts",
-      "bytes": 144384,
-      "duration": 3.021,
+      "bytes": 178176,
+      "duration": 8.021,
       "video": "h264",
       "audio": "aac",
       "width": 480,

@@ -7,20 +7,22 @@
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src 'self' blob:; connect-src 'self'; img-src 'self' blob:; object-src 'self'; frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com; base-uri 'none'; form-action 'none'">
 <title>Tesla · Videoplayer testen</title>
-<link rel="stylesheet" href="style.css">
-<script src="app.js" defer></script>
+<link rel="stylesheet" href="style.css?v=2">
+<script src="app.js?v=2" defer></script>
 </head>
 <body>
 <main>
 <header><h1>Videoplayer testen</h1><a href="../">Labor</a></header>
-<p class="intro">Nur im Stand. Medienlautstärke zuerst niedrig. Eine Variante wählen, dann <strong>Start</strong>. Im Bild steht der Name der Datei, der Zähler muss laufen, dazu ein hoher Ton.</p>
+<p class="intro">Stand 2. Nur im Stand. Die große Zahl und die Hintergrundfarbe müssen jede Sekunde wechseln, der gelbe Balken muss quer laufen. Die grüne Leiste darunter muss sich auch ohne Video bewegen.</p>
+<div class="mover" aria-hidden="true"><span></span></div>
 <section id="autoplay" aria-label="Autoplay ohne Tippen"></section>
 <p id="caps" role="status">Fähigkeiten werden gelesen…</p>
 <section class="stage" aria-label="Aktive Variante">
 <h2 id="title">Variante wählen</h2>
-<p id="hint">Die Clips sind drei Sekunden lang, synthetisch und ohne Sprache. Nichts wird hochgeladen.</p>
+<p id="hint">Acht Sekunden, synthetisch, ohne Sprache. Die große Zahl muss hochzählen. Nichts wird hochgeladen.</p>
 <div id="view"></div>
 <div class="status-line"><strong id="status">Bereit</strong><button id="start" type="button" disabled>Start</button><button id="stop" type="button" disabled>Stopp</button></div>
+<div class="tools"><button id="force" type="button">GPU-Ebene umschalten</button></div>
 <p id="metrics"></p>
 </section>
 <div id="tests" aria-label="Variante wählen"></div>

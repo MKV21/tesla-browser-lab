@@ -1,7 +1,7 @@
 (function () {
   const MSE_MIME = 'video/mp4; codecs="avc1.42C01E,mp4a.40.2"';
   const tests = [
-    { id: 'h264', label: 'H.264 Baseline', kind: 'file', src: 'clips/h264-baseline.mp4', controls: true, hint: 'Wahrscheinlichste Variante. Im Bild muss H264 BASE stehen.' },
+    { id: 'h264', label: 'H.264 Baseline', kind: 'file', src: 'clips/h264-baseline.mp4', controls: true, hint: 'Wahrscheinlichste Variante. Die große Zahl muss hochzählen, die Farbe jede Sekunde wechseln.' },
     { id: 'high', label: 'H.264 High', kind: 'file', src: 'clips/h264-high.mp4', controls: true, hint: 'Gleiches Containerformat, höheres Profil. Im Bild muss H264 HIGH stehen.' },
     { id: 'vp8', label: 'WebM VP8', kind: 'file', src: 'clips/vp8.webm', controls: true, hint: 'Anderes Container- und Codec-Paar. Im Bild muss VP8 stehen.' },
     { id: 'vp9', label: 'WebM VP9', kind: 'file', src: 'clips/vp9.webm', controls: true, hint: 'VP9 mit Opus. Im Bild muss VP9 stehen.' },
@@ -36,6 +36,12 @@
   let poll = 0;
   let blobUrl = '';
   let canvasTimer = 0;
+  let motionChanges = 0;
+  let lastSig = null;
+  const probe = document.createElement('canvas');
+  probe.width = 16;
+  probe.height = 16;
+  const probeCtx = probe.getContext('2d', { willReadFrequently: true });
 
   function log(line) {
     const stamp = new Date().toISOString().slice(11, 19);
@@ -86,31 +92,65 @@
   function describe(video) {
     const failed = errorText(video);
     if (failed) return failed;
-    const width = video.videoWidth || 0;
-    const height = video.videoHeight || 0;
     const time = video.currentTime ? video.currentTime.toFixed(1) : '0.0';
-    const videoBytes = 'webkitVideoDecodedByteCount' in video ? video.webkitVideoDecodedByteCount : null;
-    const audioBytes = 'webkitAudioDecodedByteCount' in video ? video.webkitAudioDecodedByteCount : null;
-    let picture = width > 0 ? 'Bild ' + width + '×' + height : 'keine Bildgröße';
-    if (videoBytes === 0 && video.currentTime > 0.2) picture = 'Zeit läuft, keine dekodierten Bilder';
-    if (videoBytes > 0) picture += ', Bilder dekodiert';
-    let sound = '';
-    if (audioBytes === null) sound = '';
-    else if (audioBytes > 0) sound = ', Ton dekodiert';
-    else if (video.currentTime > 0.2) sound = ', kein Ton dekodiert';
-    return (video.paused ? 'Pause' : 'Läuft') + ' · ' + time + ' s · ' + picture + sound;
+    let motion = 'Bild noch unbekannt';
+    if (video.currentTime > 0.8) {
+      motion = motionChanges > 0 ? 'BILD WECHSELT' : 'BILD STEHT';
+    }
+    const sound = audioWord(video);
+    return (video.paused ? 'Pause' : 'Läuft') + ' · ' + motion + ' · ' + time + ' s' + sound;
+  }
+
+  function audioWord(video) {
+    if (!('webkitAudioDecodedByteCount' in video)) return '';
+    if (video.webkitAudioDecodedByteCount > 0) return ' · Ton da';
+    if (video.currentTime > 0.4) return ' · kein Ton';
+    return '';
+  }
+
+  function sampleMotion(video) {
+    try {
+      probeCtx.drawImage(video, 0, 0, 16, 16);
+      const data = probeCtx.getImageData(0, 0, 16, 16).data;
+      let sig = 0;
+      for (let i = 0; i < data.length; i += 8) sig = (sig * 33 + data[i] + data[i + 1] + data[i + 2]) % 1000003;
+      if (lastSig !== null && sig !== lastSig) motionChanges += 1;
+      lastSig = sig;
+      const mirror = view.querySelector('canvas.mirror');
+      if (mirror) mirror.getContext('2d').drawImage(video, 0, 0, mirror.width, mirror.height);
+      return true;
+    } catch (error) {
+      metrics.textContent = 'Bild nicht auslesbar: ' + error.name;
+      return false;
+    }
+  }
+
+  function ensureMirror(video) {
+    if (!active || active.kind === 'canvas' || view.querySelector('canvas.mirror')) return;
+    const label = document.createElement('p');
+    label.className = 'mirror-label';
+    label.textContent = 'Untere Kopie. Wenn nur die sich bewegt, hängt die Videodarstellung.';
+    const canvas = document.createElement('canvas');
+    canvas.className = 'mirror';
+    canvas.width = video.videoWidth || 480;
+    canvas.height = video.videoHeight || 270;
+    view.append(label, canvas);
   }
 
   function watch(video) {
     window.clearInterval(poll);
+    motionChanges = 0;
+    lastSig = null;
+    ensureMirror(video);
     poll = window.setInterval(function () {
-      const text = describe(video);
-      statusEl.textContent = text;
+      sampleMotion(video);
+      statusEl.textContent = describe(video);
       const videoBytes = 'webkitVideoDecodedByteCount' in video ? video.webkitVideoDecodedByteCount : '–';
       const audioBytes = 'webkitAudioDecodedByteCount' in video ? video.webkitAudioDecodedByteCount : '–';
-      metrics.textContent = 'ready ' + video.readyState + ' · network ' + video.networkState
-        + ' · dekodiert Bild/Ton ' + videoBytes + '/' + audioBytes;
-    }, 300);
+      if (!metrics.textContent || metrics.textContent.indexOf('nicht auslesbar') < 0) {
+        metrics.textContent = 'Wechsel ' + motionChanges + ' · dekodiert Bild/Ton ' + videoBytes + '/' + audioBytes;
+      }
+    }, 250);
   }
 
   function clearView() {
@@ -451,6 +491,12 @@
     if (!event.data || event.data.type !== 'tesla-video-frame') return;
     statusEl.textContent = event.data.text;
     log(event.data.text);
+  });
+
+  document.querySelector('#force').addEventListener('click', function () {
+    const on = view.classList.toggle('force');
+    this.setAttribute('aria-pressed', on ? 'true' : 'false');
+    log(on ? 'GPU-Ebene an' : 'GPU-Ebene aus');
   });
 
   tests.forEach(function (test) {

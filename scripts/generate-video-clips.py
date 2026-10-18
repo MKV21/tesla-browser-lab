@@ -16,7 +16,7 @@ OUT = ROOT / "video" / "clips"
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 SIZE = "480x270"
 RATE = "15"
-DUR = "3"
+DUR = "8"
 
 
 def run(args: list[str]) -> None:
@@ -26,10 +26,18 @@ def run(args: list[str]) -> None:
 
 def video_src(label: str) -> str:
     safe = label.replace(":", "\\:").replace("'", "")
+    # Full-frame color flips every second, a yellow bar crosses, and a huge
+    # second digit sits in the middle. testsrc2 looked static on a car screen.
     return (
-        f"testsrc2=size={SIZE}:rate={RATE}:duration={DUR},"
-        f"drawtext=fontfile={FONT}:text='{safe}':fontsize=32:fontcolor=white:"
-        "box=1:boxcolor=black@0.65:x=12:y=12"
+        f"color=c=black:size={SIZE}:rate={RATE}:duration={DUR},"
+        "geq=r='if(lt(mod(T\\,2)\\,1)\\,30\\,230)'"
+        ":g='if(lt(mod(T\\,2)\\,1)\\,180\\,60)'"
+        ":b='if(lt(mod(T\\,2)\\,1)\\,230\\,30)',"
+        "drawbox=x='mod(t*90\\,400)':y=190:w=70:h=50:color=yellow:t=fill,"
+        f"drawtext=fontfile={FONT}:text='%{{eif\\:t\\:d}}':fontsize=120:fontcolor=white:"
+        "x=(w-text_w)/2:y=28,"
+        f"drawtext=fontfile={FONT}:text='{safe}':fontsize=28:fontcolor=black:"
+        "x=16:y=16"
     )
 
 
@@ -284,7 +292,7 @@ def main() -> None:
             [
                 "#EXTM3U",
                 "#EXT-X-VERSION:3",
-                "#EXT-X-TARGETDURATION:4",
+                f"#EXT-X-TARGETDURATION:{max(4, int(duration) + 1)}",
                 "#EXT-X-MEDIA-SEQUENCE:0",
                 f"#EXTINF:{duration:.3f},",
                 "segment.m2ts",
